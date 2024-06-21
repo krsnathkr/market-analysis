@@ -1,15 +1,11 @@
 # google_gemini_api.py
 import os
-from dotenv import load_dotenv
+import yfinance as yf
 import google.generativeai as genai
 
-# Load environment variables from .env file
-load_dotenv()
-
-def configure_gemini():
-    api_key = os.getenv("GEMINI_API_KEY")
+def configure_gemini(api_key):
     if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable not set.")
+        raise ValueError("API key not provided.")
     genai.configure(api_key=api_key)
 
 def generate_financial_analysis(query):
@@ -26,9 +22,20 @@ def generate_financial_analysis(query):
         generation_config=generation_config,
     )
 
-    response = model.generate_content([
-        f"input: You are a Finance expert AI. Your task is to Provide data analysis, Summarize industry news and reports and Explain different investment strategies.\n\ncan you tell me about the stock {query}",
-        "output: ",
-    ])
+    prompt = (
+        f"input: Provide detailed information about the stock {query}. Please include the following:\n"
+        "Key financials (revenue, net income, EPS, etc.)\n"
+        "Major recent news and updates\n"
+        "Analyst ratings and target prices\n"
+        "Investment strategy insights (growth potential, risks, expert opinions, etc.)\n"
+        "Please format the response with bullet points for clarity.\n"
+    )
+
+    response = model.generate_content([prompt, "output: "])
 
     return response.text if response else None
+
+def fetch_stock_data(ticker):
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="1y")
+    return hist

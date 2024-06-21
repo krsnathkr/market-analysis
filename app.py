@@ -1,20 +1,71 @@
 # app.py
 import streamlit as st
-from google_gemini_api import configure_gemini, generate_financial_analysis
+import os
+import plotly.express as px
+import pandas as pd
+from google_gemini_api import configure_gemini, generate_financial_analysis, fetch_stock_data
 
-configure_gemini()
-
-st.title("Stock Market Analysis Tool :moneybag:")
-st.write("The Market Analysis Tool is an innovative web application designed to assist investors, business owners, and financial enthusiasts in analyzing market trends and gaining insights from financial data and news. Utilizing the powerful Google Generative AI API, this tool provides detailed summaries, data analysis, and investment strategy explanations, all tailored to specific queries.")
-st.write("---")
+st.set_page_config(page_title="Stock Market Analysis Tool", layout="wide")
+st.title("Stock Market Analysis Tool :chart_with_upwards_trend:")
 
 st.sidebar.header("Query Parameters")
-query = st.sidebar.text_input("Search Query", value="Micron - MU")
+api_key = st.sidebar.text_input("Enter Google Gemini API Key", type="password")
+ticker = st.sidebar.text_input("Enter Stock Ticker", value="MU")
 
 if st.sidebar.button("Fetch Data"):
-    data = generate_financial_analysis(query)
-    if data:
-        st.write("### Financial Analysis and Insights")
-        st.write(data)
+    if not api_key:
+        st.sidebar.error("Please enter a valid API key.")
+    elif not ticker:
+        st.sidebar.error("Please enter a valid stock ticker.")
     else:
-        st.write("No data found or API error.")
+        with st.spinner("Fetching data..."):
+            try:
+                configure_gemini(api_key)
+                data = generate_financial_analysis(ticker)
+                stock_data = fetch_stock_data(ticker)
+                
+                if data:
+                    st.subheader("Financial Analysis and Insights")
+                    st.write(data)
+                    st.write("---")
+                    
+                    if not stock_data.empty:
+                        st.subheader(f"{ticker} Stock Price Data")
+                        fig = px.line(stock_data, x=stock_data.index, y="Close", title=f"{ticker} Stock Prices Over the Last Year")
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.warning("No stock data found.")
+                else:
+                    st.error("No data found or API error.")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+
+
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("---")
+
+st.sidebar.write("Get yourself a Google Gemini API key at https://aistudio.google.com/") 
+st.sidebar.write("Developed by Krishna Thakar :heart:")
+
+st.sidebar.write("If Gemini hallucinates, please fetch the data again :)")
