@@ -45,5 +45,3 @@ st.sidebar.write("---")
 
 st.sidebar.write("Get yourself a Google Gemini API key at https://aistudio.google.com/") 
 st.sidebar.write("Developed by Krishna Thakar :heart:")
-
-st.sidebar.write("If Gemini hallucinates, please fetch the data again :)")
