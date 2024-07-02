@@ -5,8 +5,8 @@ import plotly.express as px
 import pandas as pd
 from google_gemini_api import configure_gemini, generate_financial_analysis, fetch_stock_data
 
-st.set_page_config(page_title="Stock Market Analysis Tool", layout="wide")
-st.title("Stock Market Analysis Tool :chart_with_upwards_trend:")
+st.set_page_config(page_title="Market Radar", layout="wide")
+st.title("Market Radar :chart_with_upwards_trend:")
 
 st.sidebar.header("Query Parameters")
 api_key = st.sidebar.text_input("Enter Google Gemini API Key", type="password")
